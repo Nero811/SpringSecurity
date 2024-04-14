@@ -1,7 +1,7 @@
 # SpringSecurity
 ## Project簡介
 Spring Security實作練習:  
-使用Spring Boot串接MySQL資料庫，搭配Spring Security做身份識別認證與角色授權
+使用Spring Boot串接MySQL資料庫，搭配Spring Security做身份識別認證與角色授權。
 
 
 ## 架構
