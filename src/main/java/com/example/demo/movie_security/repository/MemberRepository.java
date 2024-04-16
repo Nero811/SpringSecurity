@@ -9,4 +9,5 @@ import com.example.demo.movie_security.entity.MemberEntity;
 public interface MemberRepository extends JpaRepository<MemberEntity, Integer> {
 
     MemberEntity findByEmail(String username);
+    // MemberEntity findByMemberId(Integer memberId);
 }

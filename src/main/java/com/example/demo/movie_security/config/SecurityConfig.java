@@ -36,6 +36,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/register").permitAll()
                         .requestMatchers("/userLogin").authenticated()
+                        .requestMatchers("/getMovies").hasAnyAuthority("ROLE_NORMAL_MEMBER", "ROLE_MOVIE_MANAGER", "ROLE_ADMIN")
+                        .requestMatchers("/watchFreeMovie").hasAnyAuthority("ROLE_NORMAL_MEMBER", "ROLE_ADMIN")
+                        .requestMatchers("/watchVipMovie").hasAnyAuthority("ROLE_VIP_MEMBER", "ROLE_ADMIN")
+                        .requestMatchers("/uploadMovie").hasAnyAuthority("ROLE_MOVIE_MANAGER", "ROLE_ADMIN")
+                        .requestMatchers("/deleteMovie").hasAnyAuthority("ROLE_MOVIE_MANAGER", "ROLE_ADMIN")
                         .anyRequest().authenticated())
                 .build();
     }
