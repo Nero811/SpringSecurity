@@ -34,14 +34,16 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
+                        // 註冊帳號功能
                         .requestMatchers("/register").permitAll()
+                        // 登入功能
                         .requestMatchers("/userLogin").authenticated()
                         .requestMatchers("/getMovies").hasAnyAuthority("ROLE_NORMAL_MEMBER", "ROLE_MOVIE_MANAGER", "ROLE_ADMIN")
                         .requestMatchers("/watchFreeMovie").hasAnyAuthority("ROLE_NORMAL_MEMBER", "ROLE_ADMIN")
                         .requestMatchers("/watchVipMovie").hasAnyAuthority("ROLE_VIP_MEMBER", "ROLE_ADMIN")
                         .requestMatchers("/uploadMovie").hasAnyAuthority("ROLE_MOVIE_MANAGER", "ROLE_ADMIN")
                         .requestMatchers("/deleteMovie").hasAnyAuthority("ROLE_MOVIE_MANAGER", "ROLE_ADMIN")
-                        .anyRequest().authenticated())
+                        .anyRequest().denyAll())
                 .build();
     }
 
