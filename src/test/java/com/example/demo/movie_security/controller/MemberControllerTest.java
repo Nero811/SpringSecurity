@@ -48,6 +48,13 @@ public class MemberControllerTest {
 
                 mockMvc.perform(requestBuilder)
                                 .andExpect(status().is(200));
+
+                requestBuilder = MockMvcRequestBuilders
+                                .get("/getMovies")
+                                .with(httpBasic("test1@gmail.com", "111"));
+
+                mockMvc.perform(requestBuilder)
+                                .andExpect(status().is(200));
         }
 
         @Test

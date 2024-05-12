@@ -18,11 +18,6 @@ public class MovieControllerTest {
     MockMvc mockMvc;
 
     @Test
-    void testDeleteMovie() {
-
-    }
-
-    @Test
     public void getMovies_normalMember_success() throws Exception {
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -32,7 +27,7 @@ public class MovieControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(200));
     }
-    
+
     @Test
     void watchFreeMovie_normalMember_success() throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders

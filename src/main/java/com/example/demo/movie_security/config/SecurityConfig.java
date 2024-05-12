@@ -38,11 +38,15 @@ public class SecurityConfig {
                         .requestMatchers("/register").permitAll()
                         // 登入功能
                         .requestMatchers("/userLogin").authenticated()
+                        // Movie 功能
                         .requestMatchers("/getMovies").hasAnyAuthority("ROLE_NORMAL_MEMBER", "ROLE_MOVIE_MANAGER", "ROLE_ADMIN")
                         .requestMatchers("/watchFreeMovie").hasAnyAuthority("ROLE_NORMAL_MEMBER", "ROLE_ADMIN")
                         .requestMatchers("/watchVipMovie").hasAnyAuthority("ROLE_VIP_MEMBER", "ROLE_ADMIN")
                         .requestMatchers("/uploadMovie").hasAnyAuthority("ROLE_MOVIE_MANAGER", "ROLE_ADMIN")
                         .requestMatchers("/deleteMovie").hasAnyAuthority("ROLE_MOVIE_MANAGER", "ROLE_ADMIN")
+                        // 註冊功能
+                        .requestMatchers("/subscribe").hasAnyAuthority("ROLE_NORMAL_MEMBER")
+                        .requestMatchers("/unSubscribe").hasAnyAuthority("ROLE_VIP_MEMBER")
                         .anyRequest().denyAll())
                 .build();
     }
