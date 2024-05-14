@@ -14,52 +14,68 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.example.demo.movie_security.dto.SubscribeRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.transaction.Transactional;
+
 @AutoConfigureMockMvc
 @SpringBootTest
 public class SubscribeControllerTest {
 
-    @Autowired
-    public MockMvc mockMvc;
+        @Autowired
+        public MockMvc mockMvc;
 
-    @Autowired
-    public ObjectMapper objectMapper;
+        @Autowired
+        public ObjectMapper objectMapper;
 
-    @Test
-    void testSubscribeAndUnSubscribe() throws Exception {
-        SubscribeRequest subscribeRequest = new SubscribeRequest();
-        subscribeRequest.setEmail("normal@gmail.com");
-        String json = objectMapper.writeValueAsString(subscribeRequest);
-        // Subscribe
-        RequestBuilder requestMatcher = MockMvcRequestBuilders
-                .post("/subscribe")
-                .header("Content-Type", "application/json")
-                .content(json)
-                .with(httpBasic("normal@gmail.com", "normal"));
+        @Transactional
+        @Test
+        void testSubscribeAndUnSubscribe() throws Exception {
+                SubscribeRequest subscribeRequest = new SubscribeRequest();
+                subscribeRequest.setEmail("normal@gmail.com");
+                String json = objectMapper.writeValueAsString(subscribeRequest);
+                // Subscribe
+                RequestBuilder requestMatcher = MockMvcRequestBuilders
+                                .post("/subscribe")
+                                .header("Content-Type", "application/json")
+                                .content(json)
+                                .with(httpBasic("normal@gmail.com", "normal"));
 
-        mockMvc.perform(requestMatcher)
-                .andExpect(status().is(200));
+                mockMvc.perform(requestMatcher)
+                                .andExpect(status().is(200));
 
-        requestMatcher = MockMvcRequestBuilders
-                .post("/watchVipMovie")
-                .with(httpBasic("normal@gmail.com", "normal"));
+                requestMatcher = MockMvcRequestBuilders
+                                .post("/watchVipMovie")
+                                .with(httpBasic("normal@gmail.com", "normal"));
 
-        mockMvc.perform(requestMatcher)
-                .andExpect(status().is(200));
-        // UnSubscribe
-        requestMatcher = MockMvcRequestBuilders
-                .post("/unSubscribe")
-                .header("Content-Type", "application/json")
-                .content(json)
-                .with(httpBasic("normal@gmail.com", "normal"));
+                mockMvc.perform(requestMatcher)
+                                .andExpect(status().is(200));
+        }
 
-        mockMvc.perform(requestMatcher)
-                .andExpect(status().is(200));
+        @Transactional
+        @Test
+        void testUnSubscribe() throws Exception {
+                SubscribeRequest subscribeRequest = new SubscribeRequest();
+                subscribeRequest.setEmail("normal@gmail.com");
+                String json = objectMapper.writeValueAsString(subscribeRequest);
+                // Subscribe
+                RequestBuilder requestMatcher = MockMvcRequestBuilders
+                                .post("/subscribe")
+                                .header("Content-Type", "application/json")
+                                .content(json)
+                                .with(httpBasic("normal@gmail.com", "normal"));
+                requestMatcher = MockMvcRequestBuilders
+                                .post("/unSubscribe")
+                                .header("Content-Type", "application/json")
+                                .content(json)
+                                .with(httpBasic("normal@gmail.com", "normal"));
 
-        requestMatcher = MockMvcRequestBuilders
-                .post("/watchVipMovie")
-                .with(httpBasic("normal@gmail.com", "normal"));
+                mockMvc.perform(requestMatcher)
+                                .andExpect(status().is(200));
 
-        mockMvc.perform(requestMatcher)
-                .andExpect(status().is(403));
-    }
+                requestMatcher = MockMvcRequestBuilders
+                                .post("/watchVipMovie")
+                                .with(httpBasic("normal@gmail.com", "normal"));
+
+                mockMvc.perform(requestMatcher)
+                                .andExpect(status().is(403));
+        }
 }

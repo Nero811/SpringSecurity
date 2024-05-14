@@ -43,13 +43,17 @@ public class SubscribeController {
             RoleEntity role = roleRepository.findByRoleName(ROLE);
             if (members.size() != 0) {
                 memberEntity = members.get(0);
-                MemberHasRoleEntity memberHasRoleEntity = createMemberHasRoleEntity(memberEntity, role);
-                memberHasRoleRepositroy.save(memberHasRoleEntity);
+                if (!checkSubscribe(memberEntity, role)) {
+                    MemberHasRoleEntity memberHasRoleEntity = createMemberHasRoleEntity(memberEntity, role);
+                    memberHasRoleRepositroy.save(memberHasRoleEntity);
+                } else {
+                    return ResponseEntity.ok("用戶已訂閱，無須再次訂閱 !!");
+                }
             }
         } catch (NullPointerException | IllegalArgumentException e) {
             log.error(e.getMessage());
         }
-        return ResponseEntity.ok("訂閱成功 !!");
+        return ResponseEntity.ok("訂閱成功，請刪除Cookie再重新登入 !!");
     }
 
     @PostMapping("/unSubscribe")
@@ -70,11 +74,13 @@ public class SubscribeController {
 
             if (memberHasRoleEntities.size() > 0) {
                 memberHasRoleRepositroy.delete(memberHasRoleEntities.get(0));
+            } else {
+                return ResponseEntity.ok("用戶沒有訂閱，無須取消訂閱");
             }
         } catch (NullPointerException | IllegalArgumentException e) {
             log.error(e.getMessage());
         }
-        return ResponseEntity.ok("取消訂閱成功 !!");
+        return ResponseEntity.ok("取消訂閱成功!! 請刪除Cookie重新登入");
     }
 
     private List<MemberEntity> createMemberEntitys(String email) {
@@ -88,5 +94,16 @@ public class SubscribeController {
                 .memberId(memberEntity.getMemberId())
                 .roleId(roleEntity.getRoleId())
                 .build();
+    }
+
+    private boolean checkSubscribe(MemberEntity memberEntity, RoleEntity role) {
+        MemberHasRoleEntity memberHasRoleEntity = new MemberHasRoleEntity();
+        memberHasRoleEntity.setMemberId(memberEntity.getMemberId());
+        memberHasRoleEntity.setRoleId(role.getRoleId());
+        List<MemberHasRoleEntity> result = memberHasRoleRepositroy.findAll(Example.of(memberHasRoleEntity));
+        if (result.size() > 0) {
+            return true;
+        }
+        return false;
     }
 }

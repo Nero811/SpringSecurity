@@ -11,9 +11,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.example.demo.movie_security.filter.UserLoginFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +35,9 @@ public class SecurityConfig {
                         .configurationSource(createCorsConfig()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+
+                .addFilterAfter(new UserLoginFilter(), AuthorizationFilter.class)
+
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
@@ -39,14 +46,15 @@ public class SecurityConfig {
                         // 登入功能
                         .requestMatchers("/userLogin").authenticated()
                         // Movie 功能
-                        .requestMatchers("/getMovies").hasAnyAuthority("ROLE_NORMAL_MEMBER", "ROLE_MOVIE_MANAGER", "ROLE_ADMIN")
+                        .requestMatchers("/getMovies")
+                        .hasAnyAuthority("ROLE_NORMAL_MEMBER", "ROLE_MOVIE_MANAGER", "ROLE_ADMIN")
                         .requestMatchers("/watchFreeMovie").hasAnyAuthority("ROLE_NORMAL_MEMBER", "ROLE_ADMIN")
                         .requestMatchers("/watchVipMovie").hasAnyAuthority("ROLE_VIP_MEMBER", "ROLE_ADMIN")
                         .requestMatchers("/uploadMovie").hasAnyAuthority("ROLE_MOVIE_MANAGER", "ROLE_ADMIN")
                         .requestMatchers("/deleteMovie").hasAnyAuthority("ROLE_MOVIE_MANAGER", "ROLE_ADMIN")
                         // 註冊功能
-                        .requestMatchers("/subscribe").hasAnyAuthority("ROLE_NORMAL_MEMBER")
-                        .requestMatchers("/unSubscribe").hasAnyAuthority("ROLE_VIP_MEMBER")
+                        .requestMatchers("/subscribe", "/unSubscribe")
+                        .hasAnyAuthority("ROLE_NORMAL_MEMBER", "ROLE_ADMIN")
                         .anyRequest().denyAll())
                 .build();
     }

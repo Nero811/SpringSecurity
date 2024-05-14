@@ -1,7 +1,6 @@
 package com.example.demo.movie_security.controller;
 
 import java.util.Collection;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import com.example.demo.movie_security.entity.RoleEntity;
 import com.example.demo.movie_security.repository.MemberHasRoleRepositroy;
 import com.example.demo.movie_security.repository.MemberRepository;
 import com.example.demo.movie_security.repository.RoleRepository;
+
 
 
 @RestController
@@ -43,6 +43,10 @@ public class MemberController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody MemberEntity memberEntity) {
 
+        if (checkRegistry(memberEntity)) {
+            return ResponseEntity.ok().body("用戶已註冊過");
+        }
+        
         String password = memberEntity.getPassword();
         memberEntity.setPassword(encoder.encode(password));
         memberRepository.save(memberEntity);
@@ -69,5 +73,13 @@ public class MemberController {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
         return ResponseEntity.ok().body("登入成功！帳號 " + username + " 的權限為: " + authorities);
+    }
+
+    private boolean checkRegistry(MemberEntity memberEntity){
+        MemberEntity result = memberRepository.findByEmail(memberEntity.getEmail());
+        if (result != null) {
+            return true;
+        }
+        return false;
     }
 }
