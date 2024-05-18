@@ -1,5 +1,6 @@
 package com.example.demo.movie_security.controller;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,6 +26,7 @@ public class CrossTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .options("/getMovies")
                 .with(httpBasic("normal@gmail.com", "normal"))
+                .with(csrf())
                 .header("Access-Control-Request-Method", "Get")
                 .header("Origin", "http://example.com");
 

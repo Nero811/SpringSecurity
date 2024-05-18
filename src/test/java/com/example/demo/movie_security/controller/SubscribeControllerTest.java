@@ -1,5 +1,6 @@
 package com.example.demo.movie_security.controller;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,14 +38,16 @@ public class SubscribeControllerTest {
                                 .post("/subscribe")
                                 .header("Content-Type", "application/json")
                                 .content(json)
-                                .with(httpBasic("normal@gmail.com", "normal"));
+                                .with(httpBasic("normal@gmail.com", "normal"))
+                                .with(csrf());
 
                 mockMvc.perform(requestMatcher)
                                 .andExpect(status().is(200));
 
                 requestMatcher = MockMvcRequestBuilders
                                 .post("/watchVipMovie")
-                                .with(httpBasic("normal@gmail.com", "normal"));
+                                .with(httpBasic("normal@gmail.com", "normal"))
+                                .with(csrf());
 
                 mockMvc.perform(requestMatcher)
                                 .andExpect(status().is(200));
@@ -61,12 +64,14 @@ public class SubscribeControllerTest {
                                 .post("/subscribe")
                                 .header("Content-Type", "application/json")
                                 .content(json)
-                                .with(httpBasic("normal@gmail.com", "normal"));
+                                .with(httpBasic("normal@gmail.com", "normal"))
+                                .with(csrf());
                 requestMatcher = MockMvcRequestBuilders
                                 .post("/unSubscribe")
                                 .header("Content-Type", "application/json")
                                 .content(json)
-                                .with(httpBasic("normal@gmail.com", "normal"));
+                                .with(httpBasic("normal@gmail.com", "normal"))
+                                .with(csrf());
 
                 mockMvc.perform(requestMatcher)
                                 .andExpect(status().is(200));
